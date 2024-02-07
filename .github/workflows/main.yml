@@ -44,26 +44,26 @@ jobs:
         with:
           path: "~/.platformio/build/pico/firmware.*"
 
-  deploy-firmware:
-    name: Deploy firmware
-    needs: build-and-tests
-    runs-on: self-hosted
+  # deploy-firmware:
+  #   name: Deploy firmware
+  #   needs: build-and-tests
+  #   runs-on: self-hosted
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5.0.0
-        with:
-          python-version: "3.12"
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5.0.0
+  #       with:
+  #         python-version: "3.12"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -U https://github.com/platformio/platformio-core/archive/refs/tags/v6.1.13.zip
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip
+  #         pip install -U https://github.com/platformio/platformio-core/archive/refs/tags/v6.1.13.zip
 
-      # - name: Deploy firmware
-      #   run: platformio remote run --environment uno --target upload
-      #   env:
-      #     PLATFORMIO_AUTH_TOKEN: ${{ secrets.platformioAgent }}
+  #     # - name: Deploy firmware
+  #     #   run: platformio remote run --environment uno --target upload
+  #     #   env:
+  #     #     PLATFORMIO_AUTH_TOKEN: ${{ secrets.platformioAgent }}
