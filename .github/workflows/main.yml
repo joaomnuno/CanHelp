@@ -42,7 +42,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.3.1
         with:
-          path: "~/.platformio/build/pico/firmware.*"
+          path: ".pio/build/pico/firmware.*"
 
   # deploy-firmware:
   #   name: Deploy firmware
