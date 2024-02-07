@@ -1,14 +1,22 @@
-name: CanHelp CI/CD project
+name: PlatformIO CI
 on: [push]
 
 jobs:
   build-and-tests:
-    name: Build & Tests
+    name: Build
     runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Verify Cached
+        uses: actions/cache@v4.0.0
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
 
       - name: Set up Python
         uses: actions/setup-python@v5.0.0
@@ -30,6 +38,11 @@ jobs:
       #   run: platformio remote test --environment uno --ignore unit
       #   env:
       #     PLATFORMIO_AUTH_TOKEN: ${{ secrets.platformioAgent }}
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          path: "~/.platformio/build/pico/firmware.*"
 
   deploy-firmware:
     name: Deploy firmware
