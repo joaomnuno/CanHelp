@@ -4,7 +4,7 @@ on: [push]
 jobs:
   build-and-tests:
     name: Build & Tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -34,7 +34,7 @@ jobs:
   deploy-firmware:
     name: Deploy firmware
     needs: build-and-tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
