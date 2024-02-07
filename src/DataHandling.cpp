@@ -33,7 +33,7 @@ void HandleData()
 {
   if (Serial2.available())
   {
-    // Read incoming instrucions (1=right, -1=left, 0=straight)
+    // Read the incoming instrucions (1=right, -1=left, 0=straight)
     int incomingInstruction = Serial2.parseInt();
 
     if (!(incomingInstruction == -1 || incomingInstruction == 0 || incomingInstruction == 1))
