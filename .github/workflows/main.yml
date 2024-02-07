@@ -1,4 +1,4 @@
-name: cicd project
+name: CanHelp CI/CD project
 on: [push]
 
 jobs:
