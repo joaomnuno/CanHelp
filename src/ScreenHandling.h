@@ -2,8 +2,7 @@
 #define SCREENHANDLING_H
 
 #include <Arduino.h>
-#define button1_pin 18
-#define button2_pin 19
+#include "Config.h"
 
 void ISR_button(void);
 void ScreenSetup(void);

@@ -4,7 +4,7 @@
 // Include necessary libraries
 #include <Arduino.h>
 #include <SPI.h>
-#include <SD.h>
+#include "SD.h"
 
 int led = LED_BUILTIN;
 unsigned long timeSent = 0;
@@ -75,10 +75,14 @@ void HandleData()
 bool initializeSD()
 {
   Serial.println("Initializing SD card...");
+  SPI1.setRX(RX_SPI);
+  SPI1.setTX(TX_SPI);
+  SPI1.setCS(CS_SPI);
+  SPI1.setSCK(SCK_SPI);
+  SPI1.begin(); // Initialize SPI1
 
-  SPI.begin(); // Initialize SPI1
   // Check for SD card
-  if (!SD.begin(chipSelect))
+  if (!SD.begin(CS_SPI, SPI1))
   {
     Serial.println("SD Card initialization failed!");
     return false;

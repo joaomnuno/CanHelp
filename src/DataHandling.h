@@ -1,8 +1,7 @@
 #ifndef DATAHANDLING_H
 #define DATAHANDLING_H
 
-#define sendDelay 5
-#define chipSelect 13
+#include "Config.h"
 #include <Arduino.h>
 
 int DataHandlingSetup();

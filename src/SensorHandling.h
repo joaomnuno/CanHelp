@@ -1,9 +1,7 @@
 #ifndef SENSORHANDLING_H
 #define SENSORHANDLING_H
 
-#define seaLevelPressure_hPa 1032.65
-#define INTERRUPT_PIN 5
-#define sensorDebug false
+#include "Config.h"
 #include <Arduino.h>
 
 int SensorSetup();
