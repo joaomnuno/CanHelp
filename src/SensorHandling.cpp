@@ -22,8 +22,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 Adafruit_BME280 bme; // I2C
 
 /* Defining GPS Serial */
-#define GPSSerial Serial1
-Adafruit_GPS GPS(&GPSSerial);
+Adafruit_GPS GPS(&Serial1);
 #define GPSECHO false
 
 unsigned int prevMillis = 0;
@@ -31,14 +30,15 @@ unsigned int prevMillis = 0;
 int SensorSetup()
 {
   // Initialize BNO055
-  /*
-  if (!bno.begin()) {
+  if (!bno.begin())
+  {
     Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     return -1;
   };
 
   // Initialize BME280
-  if (!bme.begin()) {
+  if (!bme.begin())
+  {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     return -1;
   }
@@ -48,8 +48,8 @@ int SensorSetup()
   // Set the mode to NDOF
   bno.setMode(adafruit_bno055_opmode_t::OPERATION_MODE_COMPASS);
 
-
-  if (sensorDebug) {
+  if (sensorDebug)
+  {
     Serial.println("Orientation Sensor Test");
     Serial.println("");
     // Display some basic information on this sensor
@@ -62,7 +62,11 @@ int SensorSetup()
 
   // Initialize GPS
   // 9600 NMEA is the default baud rate for Adafruit GPS
-  if (!GPS.begin(9600)) {
+  Serial1.setRX(GPS_RX_UART0_PIN);
+  Serial1.setTX(GPS_TX_UART0_PIN);
+
+  if (!GPS.begin(9600))
+  {
     Serial.println("Could not find a GPS, check wiring!");
     return -1;
   }
@@ -74,9 +78,8 @@ int SensorSetup()
   delay(1000);
 
   // Ask for GPS firmware version
-  GPSSerial.println(PMTK_Q_RELEASE);
+  Serial1.println(PMTK_Q_RELEASE);
 
-  */
   return 0;
 }
 
