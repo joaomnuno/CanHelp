@@ -3,7 +3,6 @@
 
 // Include sensor libraries
 #include <Arduino.h>
-#include "Config.h"
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -133,17 +132,10 @@ void HandleSensors()
 
   // Populate sharedData
   sharedData.compass = event.orientation.x;
-  sharedData.altitude = altitude;
   sharedData.pressure = pressure;
   sharedData.temperatureAmbient = temperatureAmbient;
   sharedData.temperatureCPU = temperatureCPU;
-  sharedData.dataReady = true; // Indicate that new data is ready
-  // float temperatureCPU = analogReadTemp();
-  sharedData.compass = 0;
-  sharedData.altitude = 0;
-  sharedData.pressure = 0;
-  sharedData.temperatureAmbient = 0;
-  sharedData.temperatureCPU = 0;
+  sharedData.altitude = altitude;
   sharedData.dataReady = true; // Indicate that new data is ready
 
   /* Optional: Display calibration status */

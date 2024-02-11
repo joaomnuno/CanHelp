@@ -18,6 +18,8 @@ int DataHandlingSetup()
     return -1;
 
   // Initialize APC220
+  Serial2.setTX(RADIO_TX_UART1_PIN);
+  Serial2.setRX(RADIO_RX_UART1_PIN);
   Serial2.begin(9600);
 
   Serial.print("APC220 is warming up..");

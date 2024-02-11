@@ -22,7 +22,7 @@ void setup()
 
 void loop()
 {
-  // HandleSensors();
+  HandleSensors();
   HandleData();
   //  HandleScreen();
   // Serial.println("Testing...");
@@ -36,5 +36,5 @@ void setup1()
 
 void loop1()
 {
-  // HandleInstructions();
+  HandleInstructions();
 }
