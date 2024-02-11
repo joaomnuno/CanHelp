@@ -13,6 +13,8 @@ ReceivedData receivedData; // Define the received data object
 void setup()
 {
   Serial.begin(9600);
+  delay(4000);
+  Serial.println("Booting up!");
   DataHandlingSetup();
   SensorSetup();
   // ScreenSetup();
@@ -20,9 +22,10 @@ void setup()
 
 void loop()
 {
-  HandleSensors();
+  // HandleSensors();
   HandleData();
-  // HandleScreen();
+  //  HandleScreen();
+  // Serial.println("Testing...");
 }
 
 void setup1()
@@ -33,5 +36,5 @@ void setup1()
 
 void loop1()
 {
-  HandleInstructions();
+  // HandleInstructions();
 }

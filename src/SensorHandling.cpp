@@ -3,6 +3,7 @@
 
 // Include sensor libraries
 #include <Arduino.h>
+#include "Config.h"
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -16,9 +17,7 @@
 /* Define the DECLINATION_ANGLE */
 #define DECLINATION_ANGLE -1.27
 
-// Check I2C device address and correct line below (by default address is 0x29 or 0x28)
-//                                   id, address
-Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 Adafruit_BME280 bme; // I2C
 
 /* Defining GPS Serial */
@@ -29,11 +28,22 @@ unsigned int prevMillis = 0;
 
 int SensorSetup()
 {
+  // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
+  //                                   id, address
+  Wire.setSDA(SDA_I2C0_PIN);
+  Wire.setSCL(SCL_I2C0_PIN);
+
+  Wire.begin();
+
   // Initialize BNO055
   if (!bno.begin())
   {
     Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     return -1;
+  }
+  else
+  {
+    Serial.println("BNO055 is READY.");
   };
 
   // Initialize BME280
@@ -42,6 +52,10 @@ int SensorSetup()
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     return -1;
   }
+  else
+  {
+    Serial.println("BME280 is READY.");
+  };
 
   delay(1000);
 
@@ -70,6 +84,10 @@ int SensorSetup()
     Serial.println("Could not find a GPS, check wiring!");
     return -1;
   }
+  else
+  {
+    Serial.println("GPS is READY.");
+  }
 
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
@@ -90,23 +108,20 @@ void HandleSensors()
   /*while (!bno.isFullyCalibrated()) {
     displayCalStatus();
   }*/
+
   // Get a new sensor event
-  /*
   sensors_event_t event;
   bno.getEvent(&event);
-  */
 
   // Get temperature and  dpressureata from bme280
-  /*
   float temperatureAmbient = bme.readTemperature();
   float pressure = bme.readPressure() / 100;
   float altitude = bme.readAltitude(seaLevelPressure_hPa);
   float temperatureCPU = analogReadTemp();
-  */
 
   // Display the floating point data
-  /*
-  if (sensorDebug) {
+  if (sensorDebug)
+  {
     Serial.printf("\tCompass: %.4f", event.orientation.x);
     Serial.printf("\tAmbient Temperature: %.2f°C", temperatureAmbient);
     Serial.printf("\tCore temperature: %2.1f°C", temperatureCPU);
@@ -115,16 +130,14 @@ void HandleSensors()
     // New line for the next sample
     Serial.println("\t");
   }
-  */
+
   // Populate sharedData
-  /*
   sharedData.compass = event.orientation.x;
   sharedData.altitude = altitude;
   sharedData.pressure = pressure;
   sharedData.temperatureAmbient = temperatureAmbient;
   sharedData.temperatureCPU = temperatureCPU;
-  sharedData.dataReady = true;  // Indicate that new data is ready
-  */
+  sharedData.dataReady = true; // Indicate that new data is ready
   // float temperatureCPU = analogReadTemp();
   sharedData.compass = 0;
   sharedData.altitude = 0;
@@ -150,7 +163,7 @@ void HandleSensors()
     sensor API sensor_t type (see Adafruit_Sensor for more information)
 */
 /**************************************************************************/
-void displaySensorDetails(void)
+void displaySensorDetails()
 {
   sensor_t sensor;
   bno.getSensor(&sensor);

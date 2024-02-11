@@ -7,15 +7,17 @@
 #define TX_SPI_PIN 11
 #define RX_SPI_PIN 12
 #define CS_SPI_PIN 13
+#define RADIO_TX_UART1_PIN 8
+#define RADIO_RX_UART1_PIN 9
 
 // Sensor Handling
 #define seaLevelPressure_hPa 1032.65
 #define INTERRUPT_PIN 5
 #define sensorDebug false
-#define RADIO_TX_UART1_PIN 8
-#define RADIO_RX_UART1_PIN 9
 #define GPS_TX_UART0_PIN 16
 #define GPS_RX_UART0_PIN 17
+#define SDA_I2C0_PIN 20
+#define SCL_I2C0_PIN 21
 
 // Screen Handling
 #define button1_pin 18

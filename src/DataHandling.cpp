@@ -20,14 +20,13 @@ int DataHandlingSetup()
   // Initialize APC220
   Serial2.begin(9600);
 
-  Serial.print("\nAPC220 is warming up..");
+  Serial.print("APC220 is warming up..");
   while (!Serial2)
   {
-
     Serial.print(".");
   };
 
-  Serial.println("APC220 is ready to use.");
+  Serial.println("\nAPC220 is ready to use.");
   Serial2.println("APC220: Hello World!");
 
   fileName = getNextFileName(); // Stores new file name
