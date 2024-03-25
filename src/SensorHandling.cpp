@@ -8,6 +8,7 @@
 #include <Adafruit_BNO055.h>
 #include <Adafruit_BME280.h>
 #include <Adafruit_GPS.h>
+
 #include <utility/imumaths.h>
 
 /* Set the delay between fresh samples */
