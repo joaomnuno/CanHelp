@@ -4,7 +4,7 @@
 #include "Config.h"
 #include <Arduino.h>
 
-int SensorSetup();
+void SensorSetup();
 void HandleSensors();
 void displaySensorStatus();
 void displayCalStatus();

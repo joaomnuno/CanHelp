@@ -5,231 +5,269 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
+#include <REG.h>
+#include <wit_c_sdk.h>
 #include <Adafruit_BME280.h>
 #include <Adafruit_GPS.h>
-
 #include <utility/imumaths.h>
 
-/* Set the delay between fresh samples */
-#define BNO055_SAMPLERATE_DELAY_MS (100)
+#define ACC_UPDATE		0x01
+#define GYRO_UPDATE		0x02
+#define ANGLE_UPDATE	0x04
+#define MAG_UPDATE		0x08
+#define READ_UPDATE		0x80
+static char s_cDataUpdate = 0, s_cCmd = 0xff;
 
-/* Define the DECLINATION_ANGLE */
-#define DECLINATION_ANGLE -1.27
+static void CmdProcess(void);
+static void AutoScanSensor(void);
+static void ShowHelp(void);
+static void SensorUartSend(uint8_t *p_data, uint32_t uiSize);
+static void CopeSensorData(uint32_t uiReg, uint32_t uiRegNum);
+static int32_t IICreadBytes(uint8_t dev, uint8_t reg, uint8_t *data, uint32_t length);
+static int32_t IICwriteBytes(uint8_t dev, uint8_t reg, uint8_t* data, uint32_t length);
+static void Delayms(uint16_t ucMs);
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
-Adafruit_BME280 bme; // I2C
-
-/* Defining GPS Serial */
-Adafruit_GPS GPS(&Serial1);
-#define GPSECHO false
-
-unsigned int prevMillis = 0;
-
-int SensorSetup()
-{
-  // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
-  //                                   id, address
-  Wire.setSDA(SDA_I2C0_PIN);
-  Wire.setSCL(SCL_I2C0_PIN);
-
+void SensorSetup() {
   Wire.begin();
+  Wire.setClock(400000);
+	WitInit(WIT_PROTOCOL_I2C, 0x50);
+	WitI2cFuncRegister(IICwriteBytes, IICreadBytes);
+	WitRegisterCallBack(CopeSensorData);
+  WitDelayMsRegister(Delayms);
+	Serial.print("\r\n********************** wit-motion IIC example  ************************\r\n");
+	AutoScanSensor();
+}
+int i;
+float fAcc[3], fGyro[3], fAngle[3];
 
-  // Initialize BNO055
-  if (!bno.begin())
-  {
-    Serial.println("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    return -1;
-  }
-  else
-  {
-    Serial.println("BNO055 is READY.");
-  };
-
-  // Initialize BME280
-  if (!bme.begin())
-  {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    return -1;
-  }
-  else
-  {
-    Serial.println("BME280 is READY.");
-  };
-
-  delay(1000);
-
-  // Set the mode to NDOF
-  bno.setMode(adafruit_bno055_opmode_t::OPERATION_MODE_COMPASS);
-
-  if (sensorDebug)
-  {
-    Serial.println("Orientation Sensor Test");
-    Serial.println("");
-    // Display some basic information on this sensor
-    displaySensorDetails();
-
-    // Optional: Display current status
-    displaySensorStatus();
-  }
-  bno.setExtCrystalUse(true);
-
-  // Initialize GPS
-  // 9600 NMEA is the default baud rate for Adafruit GPS
-  Serial1.setRX(GPS_RX_UART0_PIN);
-  Serial1.setTX(GPS_TX_UART0_PIN);
-
-  if (!GPS.begin(9600))
-  {
-    Serial.println("Could not find a GPS, check wiring!");
-    return -1;
-  }
-  else
-  {
-    Serial.println("GPS is READY.");
-  }
-
-  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
-  GPS.sendCommand(PGCMD_ANTENNA);
-
-  delay(1000);
-
-  // Ask for GPS firmware version
-  Serial1.println(PMTK_Q_RELEASE);
-
-  return 0;
+void HandleSensors() {
+    WitReadReg(AX, 12);
+    delay(500);
+    while (Serial.available()) 
+    {
+      CopeCmdData(Serial.read());
+    }
+		CmdProcess();
+		if(s_cDataUpdate)
+		{
+			for(i = 0; i < 3; i++)
+			{
+				fAcc[i] = sReg[AX+i] / 32768.0f * 16.0f;
+				fGyro[i] = sReg[GX+i] / 32768.0f * 2000.0f;
+				fAngle[i] = sReg[Roll+i] / 32768.0f * 180.0f;
+			}
+			if(s_cDataUpdate & ACC_UPDATE)
+			{
+				Serial.print("acc:");
+				Serial.print(fAcc[0], 3);
+				Serial.print(" ");
+				Serial.print(fAcc[1], 3);
+				Serial.print(" ");
+				Serial.print(fAcc[2], 3);
+				Serial.print("\r\n");
+				s_cDataUpdate &= ~ACC_UPDATE;
+			}
+			if(s_cDataUpdate & GYRO_UPDATE)
+			{
+				Serial.print("gyro:");
+				Serial.print(fGyro[0], 1);
+				Serial.print(" ");
+				Serial.print(fGyro[1], 1);
+				Serial.print(" ");
+				Serial.print(fGyro[2], 1);
+				Serial.print("\r\n");
+				s_cDataUpdate &= ~GYRO_UPDATE;
+			}
+			if(s_cDataUpdate & ANGLE_UPDATE)
+			{
+				Serial.print("angle:");
+				Serial.print(fAngle[0], 3);
+				Serial.print(" ");
+				Serial.print(fAngle[1], 3);
+				Serial.print(" ");
+				Serial.print(fAngle[2], 3);
+				Serial.print("\r\n");
+				s_cDataUpdate &= ~ANGLE_UPDATE;
+			}
+			if(s_cDataUpdate & MAG_UPDATE)
+			{
+				Serial.print("mag:");
+				Serial.print(sReg[HX]);
+				Serial.print(" ");
+				Serial.print(sReg[HY]);
+				Serial.print(" ");
+				Serial.print(sReg[HZ]);
+				Serial.print("\r\n");
+				s_cDataUpdate &= ~MAG_UPDATE;
+			}
+      s_cDataUpdate = 0;
+		}
 }
 
-void HandleSensors()
-{
-  if ((millis() - prevMillis) <= BNO055_SAMPLERATE_DELAY_MS)
-    return;
-  /*while (!bno.isFullyCalibrated()) {
-    displayCalStatus();
-  }*/
 
-  // Get a new sensor event
-  sensors_event_t event;
-  bno.getEvent(&event);
-
-  // Get temperature and  dpressureata from bme280
-  float temperatureAmbient = bme.readTemperature();
-  float pressure = bme.readPressure() / 100;
-  float altitude = bme.readAltitude(seaLevelPressure_hPa);
-  float temperatureCPU = analogReadTemp();
-
-  // Display the floating point data
-  if (sensorDebug)
-  {
-    Serial.printf("\tCompass: %.4f", event.orientation.x);
-    Serial.printf("\tAmbient Temperature: %.2f°C", temperatureAmbient);
-    Serial.printf("\tCore temperature: %2.1f°C", temperatureCPU);
-    Serial.printf("\tPressure: %.4fHBar", pressure);
-
-    // New line for the next sample
-    Serial.println("\t");
-  }
-
-  // Populate sharedData
-  sharedData.compass = event.orientation.x;
-  sharedData.pressure = pressure;
-  sharedData.temperatureAmbient = temperatureAmbient;
-  sharedData.temperatureCPU = temperatureCPU;
-  sharedData.altitude = altitude;
-  sharedData.dataReady = true; // Indicate that new data is ready
-
-  /* Optional: Display calibration status */
-  // displayCalStatus();
-
-  /* Optional: Display sensor status (debug only) */
-  // displaySensorStatus();
-
-  /* Wait the specified delay before requesting nex data */
-  // delay(BNO055_SAMPLERATE_DELAY_MS);
-  prevMillis = millis();
+static void CmdProcess(void)
+{ // Process the command based on the value of s_cCmd.
+  
+	switch(s_cCmd)
+	{
+		case 'a':	if(WitStartAccCali() != WIT_HAL_OK) Serial.print("\r\nSet AccCali Error\r\n");
+			break;
+		case 'm':	if(WitStartMagCali() != WIT_HAL_OK) Serial.print("\r\nSet MagCali Error\r\n");
+			break;
+		case 'e':	if(WitStopMagCali() != WIT_HAL_OK) Serial.print("\r\nSet MagCali Error\r\n");
+			break;
+		case 'u':	if(WitSetBandwidth(BANDWIDTH_5HZ) != WIT_HAL_OK) Serial.print("\r\nSet Bandwidth Error\r\n");
+			break;
+		case 'U':	if(WitSetBandwidth(BANDWIDTH_256HZ) != WIT_HAL_OK) Serial.print("\r\nSet Bandwidth Error\r\n");
+			break;
+    case 'B': if(WitSetUartBaud(WIT_BAUD_115200) != WIT_HAL_OK) Serial.print("\r\nSet Baud Error\r\n");
+              else Serial.print(" 115200 Baud rate modified successfully\r\n");
+      break;
+    case 'b': if(WitSetUartBaud(WIT_BAUD_9600) != WIT_HAL_OK) Serial.print("\r\nSet Baud Error\r\n");
+              else Serial.print(" 9600 Baud rate modified successfully\r\n");
+      break;
+		case 'h':	ShowHelp();
+			break;
+		default :return;
+	}
+	s_cCmd = 0xff;
 }
 
-/**************************************************************************/
-/*
-    Displays some basic information on this sensor from the unified
-    sensor API sensor_t type (see Adafruit_Sensor for more information)
-*/
-/**************************************************************************/
-void displaySensorDetails()
+static void AutoScanSensor(void)
 {
-  sensor_t sensor;
-  bno.getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.print("Sensor:       ");
-  Serial.println(sensor.name);
-  Serial.print("Driver Ver:   ");
-  Serial.println(sensor.version);
-  Serial.print("Unique ID:    ");
-  Serial.println(sensor.sensor_id);
-  Serial.print("Max Value:    ");
-  Serial.print(sensor.max_value);
-  Serial.println(" xxx");
-  Serial.print("Min Value:    ");
-  Serial.print(sensor.min_value);
-  Serial.println(" xxx");
-  Serial.print("Resolution:   ");
-  Serial.print(sensor.resolution);
-  Serial.println(" xxx");
-  Serial.println("------------------------------------");
-  Serial.println("");
-  delay(200);
+	int i, iRetry;
+	
+	for(i = 0; i < 0x7F; i++)
+	{
+		WitInit(WIT_PROTOCOL_I2C, i);
+		iRetry = 2;
+		do
+		{
+			s_cDataUpdate = 0;
+			WitReadReg(AX, 3);
+			delay(5);
+			if(s_cDataUpdate != 0)
+			{
+				Serial.print("find 0x");
+				Serial.print(i, HEX);
+				Serial.print(" addr sensor\r\n");
+				ShowHelp();
+				return ;
+			}
+			iRetry--;
+		}while(iRetry);		
+	}
+	Serial.print("can not find sensor\r\n");
+	Serial.print("please check your connection\r\n");
 }
 
-/**************************************************************************/
-/*
-    Display some basic info about the sensor status
-*/
-/**************************************************************************/
-void displaySensorStatus(void)
+void CopeCmdData(unsigned char ucData)
 {
-  /* Get the system status values (mostly for debugging purposes) */
-  uint8_t system_status, self_test_results, system_error;
-  system_status = self_test_results = system_error = 0;
-  bno.getSystemStatus(&system_status, &self_test_results, &system_error);
-
-  /* Display the results in the Serial Monitor */
-  Serial.println("");
-  Serial.print("System Status: 0x");
-  Serial.println(system_status, HEX);
-  Serial.print("Self Test:     0x");
-  Serial.println(self_test_results, HEX);
-  Serial.print("System Error:  0x");
-  Serial.println(system_error, HEX);
-  Serial.println("");
-  delay(200);
+	static unsigned char s_ucData[50], s_ucRxCnt = 0;
+	
+	s_ucData[s_ucRxCnt++] = ucData;
+	if(s_ucRxCnt<3)return;										//Less than three data returned
+	if(s_ucRxCnt >= 50) s_ucRxCnt = 0;
+	if(s_ucRxCnt >= 3)
+	{
+		if((s_ucData[1] == '\r') && (s_ucData[2] == '\n'))
+		{
+			s_cCmd = s_ucData[0];
+			memset(s_ucData,0,50);
+			s_ucRxCnt = 0;
+		}
+		else 
+		{
+			s_ucData[0] = s_ucData[1];
+			s_ucData[1] = s_ucData[2];
+			s_ucRxCnt = 2;
+			
+		}
+	}
 }
 
-// Displays sensor calibration status
-void displayCalStatus(void)
+static void CopeSensorData(uint32_t uiReg, uint32_t uiRegNum)
 {
-  /* Get the four calibration values (0..3) */
-  /* Any sensor data reporting 0 should be ignored, */
-  /* 3 means 'fully calibrated" */
-  uint8_t system, gyro, accel, mag;
-  system = gyro = accel = mag = 0;
-  bno.getCalibration(&system, &gyro, &accel, &mag);
+	int i;
+    for(i = 0; i < uiRegNum; i++)
+    {
+        switch(uiReg)
+        {
+            case AZ:
+				s_cDataUpdate |= ACC_UPDATE;
+            break;
+            case GZ:
+				s_cDataUpdate |= GYRO_UPDATE;
+            break;
+            case HZ:
+				s_cDataUpdate |= MAG_UPDATE;
+            break;
+            case Yaw:
+				s_cDataUpdate |= ANGLE_UPDATE;
+            break;
+            default:
+				s_cDataUpdate |= READ_UPDATE;
+			break;
+        }
+		uiReg++;
+    }
+}
 
-  /* The data should be ignored until the system calibration is > 0 */
-  Serial.print("\t");
-  if (!system)
-  {
-    Serial.print("! ");
-  }
+static int32_t IICreadBytes(uint8_t dev, uint8_t reg, uint8_t *data, uint32_t length)
+{
+	int val;
+    Wire.beginTransmission(dev);
+    Wire.write(reg);
+    Wire.endTransmission(false); //endTransmission but keep the connection active
 
-  /* Display the individual values */
-  Serial.print("Sys:");
-  Serial.print(system, DEC);
-  Serial.print(" G:");
-  Serial.print(gyro, DEC);
-  Serial.print(" A:");
-  Serial.print(accel, DEC);
-  Serial.print(" M:");
-  Serial.print(mag, DEC);
-  Serial.println("");
+    val = Wire.requestFrom(dev, length); //Ask for bytes, once done, bus is released by default
+
+	if(val == 0)return 0;
+    while(Wire.available() < length) //Hang out until we get the # of bytes we expect
+    {
+      if(Wire.getWireTimeoutFlag())
+      {
+        Wire.clearWireTimeoutFlag();
+        return 0;
+      }
+    }
+
+    for(int x = 0 ; x < length ; x++)    data[x] = Wire.read();   
+
+    return 1;
+}
+
+static int32_t IICwriteBytes(uint8_t dev, uint8_t reg, uint8_t* data, uint32_t length)
+{
+    Wire.beginTransmission(dev);
+    Wire.write(reg);
+    Wire.write(data, length);
+    if(Wire.getWireTimeoutFlag())
+    {
+      Wire.clearWireTimeoutFlag();
+      return 0;
+    }
+    Wire.endTransmission(); //Stop transmitting
+
+    return 1; 
+}
+
+static void Delayms(uint16_t ucMs)
+{
+  delay(ucMs);
+}
+
+
+static void ShowHelp(void)
+{
+	Serial.print("\r\n************************	 WIT_SDK_DEMO	************************");
+	Serial.print("\r\n************************          HELP           ************************\r\n");
+	Serial.print("UART SEND:a\\r\\n   Acceleration calibration.\r\n");
+	Serial.print("UART SEND:m\\r\\n   Magnetic field calibration,After calibration send:   e\\r\\n   to indicate the end\r\n");
+	Serial.print("UART SEND:U\\r\\n   Bandwidth increase.\r\n");
+	Serial.print("UART SEND:u\\r\\n   Bandwidth reduction.\r\n");
+	Serial.print("UART SEND:B\\r\\n   Baud rate increased to 115200.\r\n");
+	Serial.print("UART SEND:b\\r\\n   Baud rate reduction to 9600.\r\n");
+	Serial.print("UART SEND:h\\r\\n   help.\r\n");
+	Serial.print("******************************************************************************\r\n");
 }
