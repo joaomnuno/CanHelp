@@ -29,12 +29,14 @@ void setup(){
 }
 
 void loop()
-{
+{ 
+  String message;
     while (ss.available() > 0) {
+      
         if (gps.encode(ss.read())) {
             if (gps.location.isValid()) {
                 // Construct the message to send via LoRa
-                String message = "Lat: " + String(gps.location.lat(), 6);
+                message = "Lat: " + String(gps.location.lat(), 6);
                 message += ", Lng: " + String(gps.location.lng(), 6);
                 message += ", Alt: " + String(gps.altitude.meters(), 2);
                 message += ", Sat: " + String(gps.satellites.value());
@@ -55,7 +57,13 @@ void loop()
     }
 
     smartDelay(200);
+    Serial.println("Fiding Satellite...");
+    message = "Control: " + String(controlNumber++);
+    LoRa.beginPacket();
+    LoRa.print(message);
+    LoRa.endPacket();
 
+    Serial.println("Sent: " + message);  // Debugging output
     if (millis() > 5000 && gps.charsProcessed() < 10)
         Serial.println(F("No GPS data received: check wiring"));
 }
