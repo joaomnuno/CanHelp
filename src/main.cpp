@@ -14,6 +14,12 @@ void setup();
 void loop();
 void setup1();
 void loop1();
+static void smartDelay(unsigned long ms);
+static void printFloat(float val, bool valid, int len, int prec);
+static void printInt(unsigned long val, bool valid, int len);
+static void printDateTime(TinyGPSDate &d, TinyGPSTime &t);
+static void printStr(const char *str, int len);
+
 long controlNumber = 0;
 
 void setup(){
@@ -32,6 +38,10 @@ void loop()
                 message += ", Lng: " + String(gps.location.lng(), 6);
                 message += ", Alt: " + String(gps.altitude.meters(), 2);
                 message += ", Sat: " + String(gps.satellites.value());
+                message += ", Date: ";
+                message += String(gps.date.month()) + "/" + String(gps.date.day()) + "/" + String(gps.date.year());
+                message += ", Time: ";
+                message += String(gps.time.hour()) + ":" + String(gps.time.minute()) + ":" + String(gps.time.second());
                 message += ", Control: " + String(controlNumber++);
 
                 // Send the message via LoRa
