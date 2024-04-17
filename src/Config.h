@@ -1,42 +1,36 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-// Data Handling
-#define sendDelay 5
-#define SCK_SPI_PIN 10
-#define TX_SPI_PIN 11
-#define RX_SPI_PIN 12
-#define CS_SPI_PIN 13
-#define RADIO_TX_UART1_PIN 8
-#define RADIO_RX_UART1_PIN 9
+#include <Arduino.h>
 
-// Sensor Handling
-#define seaLevelPressure_hPa 1032.65
-#define INTERRUPT_PIN 5
-#define sensorDebug true
-#define GPS_TX_UART0_PIN 16
-#define GPS_RX_UART0_PIN 17
-#define SDA_I2C0_PIN 20
-#define SCL_I2C0_PIN 21
+// LoRa configuration (Pins)
+const int loraCsPin = 17;          // LoRa radio chip select
+const int loraResetPin = 21;       // LoRa radio reset
+const int loraIrqPin = 20;         // change for your board; must be a hardware interrupt pin
+// LoRa configuration (Settings)
+const int loraTxPower = 20;          // LoRa Power setting (0-20)
+const long loraFrequency = 861E6;  // LoRa frequency in Hz
+const long loraSpreadingFactor = 7; // LoRa radio spreading factor
+const long loraBandwidth = 125E3; // LoRa radio bandwidth
+const long loraSyncword = 0x2a; // ranges from 0-0x34, default 0x34
+const long loraGain = 0; // LoRa radio auto gain setting
 
-// Screen Handling
-#define button1_pin 18
-#define button2_pin 19
+// LED configuration
+// const int ledPin = 10;                 // LED connected to digital pin GP10
+// unsigned long lastBlinkTime = 0;       // Last time the LED was turned on
+// const unsigned long blinkInterval = 50; // LED on duration in milliseconds
+// bool ledOn = false;
 
-// Servo Handling
-#define STOP_SERVO 90
-#define DELAY_VALUE 700
-#define SERVO_SPEED 90
-#define HEADING_OBJECTIVE 77
-#define threshold 7.5
-#define pinServo 6
+// GPS configuration
+const long GPS_RX_PIN = 1;
+const long GPS_TX_PIN = 0;
+static const uint32_t GPSBaud = 9600;
 
-// ^Define pulses for different directions
-#define STOP_PULSE 1500
-#define CLOCKWISE_PULSE 1700        // Adjust as needed for clockwise rotation
-#define COUNTERCLOCKWISE_PULSE 1300 // Adjust as needed for counter-clockwise rotation
 
-#define moveDuration 1000 // duration for which the servo should move (in milliseconds)
-#define lastMoveTime 0    // time when the servo last started moving
+// Message sending configuration
+byte messageCount = 0;            // count of outgoing messages
+int messageInterval = 50;        // interval between sends
+long lastSendMessageTime = 0;      // time of last packet send
+
 
 #endif
