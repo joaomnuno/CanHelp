@@ -20,7 +20,7 @@ static void printInt(unsigned long val, bool valid, int len);
 static void printDateTime(TinyGPSDate &d, TinyGPSTime &t);
 static void printStr(const char *str, int len);
 
-long controlNumber = 0;
+short controlNumber = 0;
 
 void setup(){
     Serial.begin(115200);        // Serial to computer
@@ -58,7 +58,7 @@ void loop()
 
     smartDelay(200);
     Serial.println("Fiding Satellite...");
-    message = "Control: " + String(controlNumber++);
+    message = "crl " + String(controlNumber++);
     LoRa.beginPacket();
     LoRa.print(message);
     LoRa.endPacket();
