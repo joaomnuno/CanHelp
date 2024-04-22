@@ -18,12 +18,14 @@ const int loraCsPin = 17;          // LoRa radio chip select
 const int loraResetPin = 21;       // LoRa radio reset
 const int loraIrqPin = 20;         // change for your board; must be a hardware interrupt pin
 // LoRa configuration (Settings)
-const int loraTxPower = 20;          // LoRa Power setting (0-20)
+const int loraTxPower = 16;          // LoRa Power setting (0-20)
 const long loraFrequency = 861E6;  // LoRa frequency in Hz
-const long loraSpreadingFactor = 10; // LoRa radio spreading factor
-const long loraBandwidth = 500E3; // LoRa radio bandwidth
+const long loraSpreadingFactor = 9; // LoRa radio spreading factor
+const long loraBandwidth = 125E3; // LoRa radio bandwidth
 const long loraSyncword = 0x2a; // ranges from 0-0x34, default 0x34
-const long loraGain = 0; // LoRa radio auto gain setting
+const long loraGain = 6; // LoRa radio auto gain setting
+const long CodingRate4 = 5;
+
 
 
 

@@ -32,5 +32,9 @@ void setupLoRa() {
   LoRa.setGain(loraGain); // set the gain
   LoRa.enableCrc(); // enable CRC
 
+
+  // Increase Preamble Length for better detection
+  LoRa.setPreambleLength(12);  // Increase if needed
+
   Serial.println("LoRa init succeeded.");
 }
