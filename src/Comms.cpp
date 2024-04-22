@@ -6,8 +6,9 @@
 short controlNumber = 0;
 
 void sendMessage() {
-  message += String(controlNumber++);
+  message = String(controlNumber++);
   LoRa.beginPacket();
+  delay(300);  // APAGAR ISTO DEPOIS ---------------------------------------
   LoRa.print(message);
   LoRa.endPacket();
   Serial.println("Sent: " + message);  // Debugging output
