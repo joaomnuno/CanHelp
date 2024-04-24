@@ -8,7 +8,8 @@
 #include <LoRa.h>
 #include "Global.h"
 #include <Wire.h>
-
+#include "IMU.h"
+#include "SaveData.h"
 
 void setupLoRa();
 
@@ -17,12 +18,19 @@ void setup(){
     setupGPS();
     setupLoRa();
     setupBME680();
+    setupIMU();
 }
 
 void loop()
 { 
+  if (state == "not_ready") {
+    state = loraData.message;
+  };
+
   getGPSData(message);
   getBME680Data(message);
+  getIMUData(message);
+  initSharedDataStructures();
   sendMessage();
 }
 

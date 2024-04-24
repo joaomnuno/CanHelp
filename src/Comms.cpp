@@ -44,3 +44,28 @@ void setupLoRa()
 
   Serial.println("LoRa init succeeded.");
 }
+
+void onReceive(int packetSize) {
+  if (packetSize == 0) return;  // if there's no packet, return
+
+  // read packet header bytes:
+  String incoming = "";
+  while (LoRa.available()) {
+    incoming += (char)LoRa.read();
+  }
+
+  // Print for debugging
+  Serial.println("Message: " + incoming);
+  Serial.println("RSSI: " + String(LoRa.packetRssi()));
+  Serial.println("Snr: " + String(LoRa.packetSnr()));
+  Serial.println();
+
+  // Store the data in shared structure
+  mutex_enter_blocking(&loraData.lock);
+  strncpy(loraData.message, incoming.c_str(), sizeof(loraData.message));
+  loraData.message[sizeof(loraData.message) - 1] = '\0';  // Ensure null termination
+  loraData.rssi = LoRa.packetRssi();
+  loraData.snr = LoRa.packetSnr();
+  loraData.dataReady = true;
+  mutex_exit(&loraData.lock);
+}

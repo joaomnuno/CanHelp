@@ -5,6 +5,20 @@
 
 extern String message;
 extern String state;
+extern float magneticDirection; // Global variable to store magnetic direction
+
+
+struct LoRaData {
+    char message[256];
+    int rssi;
+    float snr;
+    mutex_t lock;
+    volatile bool dataReady;
+};
+
+extern LoRaData loraData;
+
+void initSharedDataStructures();
 
 struct SharedData {
   double compass, pressure, temperatureAmbient, temperatureCPU, altitude;

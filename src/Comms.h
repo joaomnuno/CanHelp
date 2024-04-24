@@ -4,7 +4,7 @@
 
 void setupLoRa();
 void sendMessage();
-
+void onReceive(int packetSize);
 
 /* Message sending configuration
 byte messageCount = 0;            // count of outgoing messages
