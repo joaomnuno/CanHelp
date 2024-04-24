@@ -3,12 +3,11 @@
 
 #include <Arduino.h>
 
+
 void setup();
 void loop();
 void setup1();
 void loop1();
-
-String message;
 
 // LED configuration
 // const int ledPin = 10;                 // LED connected to digital pin GP10

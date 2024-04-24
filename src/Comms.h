@@ -5,13 +5,12 @@
 void setupLoRa();
 void sendMessage();
 
-extern String message;
+
 /* Message sending configuration
 byte messageCount = 0;            // count of outgoing messages
 int messageInterval = 50;        // interval between sends
 long lastSendMessageTime = 0;      // time of last packet send
 */
-
 // LoRa configuration (Pins)
 const int loraCsPin = 17;    // LoRa radio chip select
 const int loraResetPin = 21; // LoRa radio reset

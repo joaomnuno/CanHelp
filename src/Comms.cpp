@@ -2,8 +2,10 @@
 #include "Comms.h"
 #include <SPI.h>
 #include <LoRa.h>
+#include "Global.h"
 
 short controlNumber = 0;
+
 
 void sendMessage()
 {

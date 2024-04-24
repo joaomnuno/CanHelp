@@ -2,18 +2,44 @@
 #include "GpsTempBar.h"
 #include <Arduino.h>
 #include <TinyGPS++.h>
-#include <SoftwareSerial.h>
+#include "Global.h"
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME680.h>
 
 TinyGPSPlus gps;
-SoftwareSerial ss(GPS_RX_PIN, GPS_TX_PIN);
+Adafruit_BME680 bme; // Initialize the BME680 sensor instance
 
 void setupGPS() {
-    ss.begin(GPSBaud);
+    Serial1.begin(GPSBaud);
 }
+
+void setupBME680() {
+    if (!bme.begin()) {
+        Serial.println("Could not find a valid BME680 sensor, check wiring!");
+    } else {
+        // Set up oversampling and filter initialization
+        bme.setTemperatureOversampling(BME680_OS_2X);
+        bme.setHumidityOversampling(BME680_OS_2X);
+        bme.setPressureOversampling(BME680_OS_2X);
+        bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
+        // bme.setGasHeater(320, 150); // 320*C for 150 ms
+    }
+}
+
+void getBME680Data(String &message) {
+    if (!bme.performReading()) {
+        message += " Failed to perform reading from BME680.";
+        return;
+    }
+    message += " Temp: " + String(bme.temperature) + "°C";
+    message += ", Pressure: " + String(bme.pressure / 100.0) + " hPa";
+    message += ", Humidity: " + String(bme.humidity) + "%";
+}
+
 void getGPSData(String &message) {
-    while (ss.available() > 0) {
+    while (Serial1.available() > 0) {
       
-        if (gps.encode(ss.read())) {
+        if (gps.encode(Serial1.read())) {
             if (gps.location.isValid()) {
                 // Construct the message to send via LoRa
                 message += "Lat: " + String(gps.location.lat(), 6);
@@ -42,8 +68,8 @@ static void smartDelay(unsigned long ms)
   unsigned long start = millis();
   do 
   {
-    while (ss.available())
-      gps.encode(ss.read());
+    while (Serial1.available())
+      gps.encode(Serial1.read());
   } while (millis() - start < ms);
 }
 
