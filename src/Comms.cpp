@@ -3,15 +3,15 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "Global.h"
+#include <vector>
 
 short controlNumber = 0;
 
 
 void sendMessage()
 {
-  message = String(controlNumber++);
   LoRa.beginPacket();
-  delay(300); // APAGAR ISTO DEPOIS ---------------------------------------
+  delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
   LoRa.print(message);
   LoRa.endPacket();
   Serial.println("Sent: " + message); // Debugging output
@@ -46,6 +46,9 @@ void setupLoRa()
 }
 
 void onReceive(int packetSize) {
+
+  // Assume que a mensagem recebida vem na forma de STATE|STEER, por exemplo - > 1|86
+
   if (packetSize == 0) return;  // if there's no packet, return
 
   // read packet header bytes:
@@ -54,18 +57,20 @@ void onReceive(int packetSize) {
     incoming += (char)LoRa.read();
   }
 
+  if (state != "-1") {
+    state = incoming.substring(0, 1);
+  }
+  
+  steer = incoming.substring(2, 3).toInt();
+
   // Print for debugging
   Serial.println("Message: " + incoming);
-  Serial.println("RSSI: " + String(LoRa.packetRssi()));
-  Serial.println("Snr: " + String(LoRa.packetSnr()));
   Serial.println();
 
   // Store the data in shared structure
   mutex_enter_blocking(&loraData.lock);
   strncpy(loraData.message, incoming.c_str(), sizeof(loraData.message));
   loraData.message[sizeof(loraData.message) - 1] = '\0';  // Ensure null termination
-  loraData.rssi = LoRa.packetRssi();
-  loraData.snr = LoRa.packetSnr();
   loraData.dataReady = true;
   mutex_exit(&loraData.lock);
 }

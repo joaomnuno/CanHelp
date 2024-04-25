@@ -5,13 +5,16 @@
 
 extern String message;
 extern String state;
+extern int steer;
 extern float magneticDirection; // Global variable to store magnetic direction
-
+extern bool GPSReady;
+extern bool BME680Ready;
+extern bool IMUReady;
 
 struct LoRaData {
     char message[256];
-    int rssi;
-    float snr;
+    // int rssi;
+    // float snr;
     mutex_t lock;
     volatile bool dataReady;
 };
@@ -21,7 +24,7 @@ extern LoRaData loraData;
 void initSharedDataStructures();
 
 struct SharedData {
-  double compass, pressure, temperatureAmbient, temperatureCPU, altitude;
+  double timestamp, pressure, temperatureAmbient, altitude, GPSLatitude, GPSLongitude, state, buttonClicked;
   volatile bool dataReady;  // Flag to indicate new data is ready
 };
 

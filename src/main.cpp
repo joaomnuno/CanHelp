@@ -11,36 +11,43 @@
 #include "IMU.h"
 #include "SaveData.h"
 
+
 void setupLoRa();
 
 void setup(){
-    Serial.begin(115200);        // Serial to computer
-    setupGPS();
-    setupLoRa();
-    setupBME680();
-    setupIMU();
+  Serial.begin(115200);        // Serial to computer
+  setupGPS();
+  setupBME680();
+  setupIMU();
 }
 
 void loop()
 { 
-  if (state == "not_ready") {
-    state = loraData.message;
-  };
 
   getGPSData(message);
   getBME680Data(message);
   getIMUData(message);
   initSharedDataStructures();
-  sendMessage();
+  
+  
 }
 
 
 void setup1()
 {
+  setupLoRa();
 
 }
 
 void loop1()
 {
-
+  if (state == "0"){
+    onReceive(LoRa.parsePacket());
+  }
+  if (state == "1"){
+    onReceive(LoRa.parsePacket());
+  }
+  
+  sendMessage();
+  
 }

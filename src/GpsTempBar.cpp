@@ -31,7 +31,7 @@ void getBME680Data(String &message) {
         message += " Failed to perform reading from BME680.";
         return;
     }
-    message += " Temp: " + String(bme.temperature) + "°C";
+    SharedData.temperatureAmbient = double(bme.temperature);
     message += ", Pressure: " + String(bme.pressure / 100.0) + " hPa";
     message += ", Humidity: " + String(bme.humidity) + "%";
 }
