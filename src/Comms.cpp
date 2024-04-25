@@ -5,16 +5,16 @@
 #include "Global.h"
 #include <vector>
 
-short controlNumber = 0;
-
+SharedData sharedData;
 
 void sendMessage()
 {
-  LoRa.beginPacket();
   delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
-  LoRa.print(message);
+  LoRa.beginPacket();
+  mutex_enter_blocking(&loraData.lock);
+  LoRa.print(String(sharedData.hour) + "|" + String(sharedData.minute) + "|" + String(sharedData.second) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.altitude) + "|" + String(sharedData.GPSLatitude) + "|" + String(sharedData.GPSLongitude) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
+  mutex_exit(&loraData.lock);
   LoRa.endPacket();
-  Serial.println("Sent: " + message); // Debugging output
 }
 
 void setupLoRa()
@@ -47,7 +47,7 @@ void setupLoRa()
 
 void onReceive(int packetSize) {
 
-  // Assume que a mensagem recebida vem na forma de STATE|STEER, por exemplo - > 1|86
+  // Assume que a mensagem recebida vem na forma de STATE|flightStage|STEER , por exemplo - > 1|3|112
 
   if (packetSize == 0) return;  // if there's no packet, return
 
@@ -59,6 +59,10 @@ void onReceive(int packetSize) {
 
   if (state != "-1") {
     state = incoming.substring(0, 1);
+  }
+
+  if (flightStage != "-1") {
+    flightStage = incoming.substring(2, 3);
   }
   
   steer = incoming.substring(2, 3).toInt();

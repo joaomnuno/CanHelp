@@ -19,24 +19,37 @@ void setup(){
   setupGPS();
   setupBME680();
   setupIMU();
+  initSharedDataStructures();
 }
 
 void loop()
 { 
-
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
   getGPSData(message);
   getBME680Data(message);
   getIMUData(message);
-  initSharedDataStructures();
-  
-  
+
+  // CODIGO DE ESCREVER NA SD
+  }
+
+  if (state == "3"){
+    // PARAGLIDER CONTROL HERE
+  }
+
+  if (state == "5"){
+    // PARAGLIDER MANUAL CONTROL HERE
+  }
+
+  if (state == "4"){
+    // HELP CODE HERE (ASK QUESTIONS, ETC)
+  }
 }
 
 
 void setup1()
 {
   setupLoRa();
-
+  initSD();
 }
 
 void loop1()
@@ -44,10 +57,11 @@ void loop1()
   if (state == "0"){
     onReceive(LoRa.parsePacket());
   }
-  if (state == "1"){
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
     onReceive(LoRa.parsePacket());
+    sendMessage();
   }
   
-  sendMessage();
+  
   
 }

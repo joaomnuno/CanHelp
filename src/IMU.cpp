@@ -5,6 +5,8 @@
 #include <Wire.h>
 #include "Global.h"
 
+
+
 void IMUDataUpdate(uint32_t regIndex, uint32_t count) {
     // This function is called when new data is available
     // We assume AX, AY, AZ are at indices 0, 1, 2, and HX, HY, HZ are at indices 3, 4, 5
@@ -27,12 +29,14 @@ void setupIMU() {
 }
 
 void getIMUData(String &message) {
+
     WitReadReg(AX, 6); // Read accelerometer and magnetometer data
     delay(100); // Small delay to ensure data is ready
 
     // Append IMU data to message
-    message += " AccX: " + String(sReg[AX] / 32768.0 * 16);
-    message += " AccY: " + String(sReg[AY] / 32768.0 * 16);
-    message += " AccZ: " + String(sReg[AZ] / 32768.0 * 16);
-    message += " MagDir: " + String(magneticDirection) + "°";
+    sharedData.IMUAccX = double(sReg[AX] / 32768.0 * 16);
+    sharedData.IMUAccY = double(sReg[AY] / 32768.0 * 16);
+    sharedData.IMUAccZ = double(sReg[AZ] / 32768.0 * 16);
+ 
+
 }
