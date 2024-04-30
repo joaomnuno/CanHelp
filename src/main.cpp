@@ -21,15 +21,8 @@ void setup()
 
 void loop()
 {
-  if (state != "0")
-  {
-    getGPSData(message);
-    getBME680Data(message);
-    getIMUData(message);
 
-    // CODIGO DE ESCREVER NA SD
-  }
-
+  getIMUData();
   if (state == "3")
   {
     // PARAGLIDER CONTROL HERE
