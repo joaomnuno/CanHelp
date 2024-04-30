@@ -11,11 +11,11 @@
 #include "IMU.h"
 #include "SaveData.h"
 
-
 void setupLoRa();
 
-void setup(){
-  Serial.begin(115200);        // Serial to computer
+void setup()
+{
+  Serial.begin(115200); // Serial to computer
   setupGPS();
   setupBME680();
   setupIMU();
@@ -23,28 +23,31 @@ void setup(){
 }
 
 void loop()
-{ 
-  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
-  getGPSData(message);
-  getBME680Data(message);
-  getIMUData(message);
+{
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5")
+  {
+    getGPSData(message);
+    getBME680Data(message);
+    getIMUData(message);
 
-  // CODIGO DE ESCREVER NA SD
+    // CODIGO DE ESCREVER NA SD
   }
 
-  if (state == "3"){
+  if (state == "3")
+  {
     // PARAGLIDER CONTROL HERE
   }
 
-  if (state == "5"){
+  if (state == "5")
+  {
     // PARAGLIDER MANUAL CONTROL HERE
   }
 
-  if (state == "4"){
+  if (state == "4")
+  {
     // HELP CODE HERE (ASK QUESTIONS, ETC)
   }
 }
-
 
 void setup1()
 {
@@ -54,14 +57,13 @@ void setup1()
 
 void loop1()
 {
-  if (state == "0"){
+  if (state == "0")
+  {
     onReceive(LoRa.parsePacket());
   }
-  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5")
+  {
     onReceive(LoRa.parsePacket());
     sendMessage();
   }
-  
-  
-  
 }
