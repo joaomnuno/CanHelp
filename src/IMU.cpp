@@ -28,7 +28,7 @@ void setupIMU() {
     WitRegisterCallBack(IMUDataUpdate); // Register the callback function
 }
 
-void getIMUData(String &message) {
+void getIMUData() {
 
     WitReadReg(AX, 6); // Read accelerometer and magnetometer data
     delay(100); // Small delay to ensure data is ready
