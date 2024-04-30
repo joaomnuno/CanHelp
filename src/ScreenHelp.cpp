@@ -1,17 +1,18 @@
 #include "ScreenHelp.h"
 #include <U8g2lib.h> 
 #include "bitmaps.h"
+#include "Global.h"
 
-static int currentBitmap = 1;
-
+int currentBitmap = 1; 
 
 // Create the display object
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, ScreeniicClock, ScreeniicData);
 
 
 void setupDisplay() {
-    pinMode(pinButton1, INPUT_PULLUP);
-    pinMode(pinButton2, INPUT_PULLUP);
+    sharedData.helpMessage = '999999';
+    pinMode(pinButton1, INPUT_PULLDOWN);
+    pinMode(pinButton2, INPUT_PULLDOWN);
 
     // Initialize the display
     u8g2.begin();
@@ -35,10 +36,32 @@ void checkButtonPresses() {
 
     if ((millis() - lastDebounceTime1) > 50) {
         if (currentButtonState1 == LOW) {
-            if (currentBitmap == 1){
-                // Send GPS coordinates and Alert signal
-                currentBitmap = 2;
-                changeBitmap();
+            switch (currentBitmap) {
+                case 1:
+                    // Send GPS coordinates and Alert signal
+                    sharedData.helpMessage[0] = '1';
+                    currentBitmap ++;
+                    changeBitmap();
+                case 2:
+                    sharedData.helpMessage[1] = '1';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 3:
+                    sharedData.helpMessage[2] = '1';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 4:
+                    sharedData.helpMessage[3] = '1';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 5:
+                    sharedData.helpMessage[4] = '1';
+                    currentBitmap ++;
+                    changeBitmap();
+                case 6:
+                    sharedData.helpMessage[5] = '1';
+                    currentBitmap ++;
+                    changeBitmap(); 
             }
 
         }
@@ -46,16 +69,38 @@ void checkButtonPresses() {
 
     if ((millis() - lastDebounceTime2) > 50) {
         if (currentButtonState2 == LOW) {
-            if (currentBitmap == 1){
-                // Send GPS coordinates and Alert signal
-                currentBitmap = 2;
-                changeBitmap();
-            }
+            switch (currentBitmap) {
+                case 1:
+                    // Send GPS coordinates and Alert signal
+                    sharedData.helpMessage[0] = '1';
+                    currentBitmap ++;
+                    changeBitmap();
+                case 2:
+                    sharedData.helpMessage[1] = '0';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 3:
+                    sharedData.helpMessage[2] = '0';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 4:
+                    sharedData.helpMessage[3] = '0';
+                   currentBitmap ++;
+                   changeBitmap();
+                case 5:
+                    sharedData.helpMessage[4] = '0';
+                    currentBitmap ++;
+                    changeBitmap();
+                case 6:
+                    sharedData.helpMessage[5] = '0';
+                    currentBitmap ++;
+                    changeBitmap(); 
         }
     }
 
     lastButtonState1 = currentButtonState1;
     lastButtonState2 = currentButtonState2;
+}
 }
 
 void changeBitmap() {
@@ -80,7 +125,6 @@ void changeBitmap() {
             break;
         case 6:
             u8g2.drawXBM(0, 0, BITMAP_WIDTH, BITMAP_HEIGHT, epd_bitmap_CanHelp_perguntas_5);
-            break;
     }
 
     u8g2.sendBuffer(); // transfer internal memory to the display

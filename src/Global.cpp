@@ -1,6 +1,8 @@
 #include "Global.h"
 #include "pico/sync.h"
 
+
+SharedData sharedData;
 LoRaData loraData;
 
 String message = "";
