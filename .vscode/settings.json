@@ -1,6 +1,8 @@
 {
-    "files.associations": {
-        "system_error": "cpp",
-        "vector": "cpp"
-    }
+  "files.associations": {
+    "*.ino": "c",
+    "system_error": "cpp",
+    "vector": "cpp",
+    "*.old": "c"
+  }
 }

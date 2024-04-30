@@ -1,0 +1,146 @@
+#include <SD.h>
+#include <SPI.h>
+#include <Arduino.h>
+#include <Wire.h>
+
+const int SD_SCK = 2;  // SPI Clock
+const int SD_MISO = 4; // Master In Slave Out (MISO)
+const int SD_MOSI = 7; // Master Out Slave In (MOSI)
+const int SD_CS = 5;   // Slave Select (Chip Select)
+
+File dataFile; // Global declaration of File object
+
+void initSD();
+void storeData(const String &fileName, const String &data);
+void readData(const String &fileName);
+void deleteData(const String &fileName);
+String getNextFileName();
+void listFiles();
+
+void setup()
+{
+    Serial.begin(115200);
+    while (!Serial)
+        ; // Ensure Serial communication has started
+
+    // initSD();
+    // listFiles();  // List all files on the SD card
+}
+
+void loop()
+{
+    // The main loop remains empty
+}
+
+void initSD()
+{
+    // Initialize SD card with custom SPI settings
+    SPI.setRX(SD_MISO);
+    SPI.setTX(SD_MOSI);
+    SPI.setSCK(SD_SCK);
+
+    if (!SD.begin(SD_CS, SPI))
+    {
+        Serial.println("SD Card initialization failed!");
+        return;
+    }
+    Serial.println("SD Card initialized.");
+}
+
+void storeData(const String &fileName, const String &data)
+{
+    dataFile = SD.open(fileName, FILE_WRITE); // Open the file for writing
+    if (dataFile)
+    {
+        dataFile.println(data);
+        dataFile.close();
+        // Uncomment the following line for debugging
+        // Serial.println("Data stored on SD Card.");
+    }
+    else
+    {
+        Serial.println("Error opening " + fileName);
+    }
+}
+
+void readData(const String &fileName)
+{
+    dataFile = SD.open(fileName, FILE_READ); // Open the file for reading
+    if (dataFile)
+    {
+        Serial.println("Reading data from SD Card:");
+        while (dataFile.available())
+        {
+            Serial.write(dataFile.read());
+        }
+        dataFile.close();
+    }
+    else
+    {
+        Serial.println("Failed to open " + fileName + " for reading.");
+    }
+}
+
+void deleteData(const String &fileName)
+{
+    if (SD.exists(fileName))
+    {
+        SD.remove(fileName);
+        Serial.println("Data file deleted successfully.");
+    }
+    else
+    {
+        Serial.println("Data file does not exist.");
+    }
+}
+
+String getNextFileName()
+{
+    int fileNumber = 1000; // Starting file number
+    char fileName[20];     // Array to hold the filename
+
+    while (true)
+    {
+        sprintf(fileName, "data%04d.csv", fileNumber);
+        if (!SD.exists(fileName))
+        {
+            break;
+        }
+        fileNumber++;
+    }
+
+    return String(fileName); // Convert char array to String
+}
+
+void listFiles()
+{
+    File root = SD.open("/"); // Open root directory
+    if (root)
+    {
+        Serial.println("Listing files:");
+        while (true)
+        {
+            File entry = root.openNextFile();
+            if (!entry)
+            {
+                break; // No more files
+            }
+            Serial.print(entry.name());
+            if (entry.isDirectory())
+            {
+                Serial.println("/");
+            }
+            else
+            {
+                Serial.print("\t\t");
+                Serial.println(entry.size(), DEC); // Print the file size
+            }
+            entry.close();
+        }
+        root.close();
+    }
+    else
+    {
+        Serial.println("Failed to open directory.");
+    }
+}
