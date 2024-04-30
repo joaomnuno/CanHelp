@@ -3,10 +3,11 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
-#include <8
+#include <U8g2lib.h>
 
 File dataFile; // Global declaration of File object
 
+void initScreen();
 void setupLoRa();
 void initSD();
 void listFiles();
@@ -14,6 +15,8 @@ void listFiles();
 // I2C Configuration
 const int pinI2C1_SDA = 10;
 const int pinI2C1_SCL = 11;
+
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/U8X8_PIN_NONE, pinI2C1_SCL, pinI2C1_SDA);
 
 // SPI configuration
 const int pinLoraSPI_SCK = 18;  // SPI Clock
@@ -46,9 +49,10 @@ void setup()
   while (!Serial)
     ;
 
-  setupLoRa();
-  initSD();
-  listFiles();
+  // setupLoRa();
+  // initSD();
+  // listFiles();
+  initScreen();
 }
 
 void loop()
@@ -165,5 +169,19 @@ void listFiles()
   else
   {
     Serial.println("Failed to open directory.");
+  }
+}
+
+void initScreen()
+{
+  if (!u8g2.begin())
+  {
+    Serial.println("U8g2 initialization failed");
+    while (1)
+      ;
+  }
+  else
+  {
+    Serial.println("U8g2 initialized!");
   }
 }

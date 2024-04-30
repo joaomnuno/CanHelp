@@ -3,6 +3,9 @@
     "*.ino": "c",
     "system_error": "cpp",
     "vector": "cpp",
-    "*.old": "c"
+    "*.old": "c",
+    "array": "cpp",
+    "string": "cpp",
+    "string_view": "cpp"
   }
 }
