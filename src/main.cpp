@@ -32,15 +32,16 @@ void loop()
     // PARAGLIDER CONTROL HERE
   }
 
-  if (state == "5"){
+  if (state == "5")
+  {
     // PARAGLIDER MANUAL CONTROL HERE
   }
 
-  if (state == "4"){
+  if (state == "4")
+  {
     // HELP CODE HERE (ASK QUESTIONS, ETC)
   }
 }
-
 
 void setup1()
 {
@@ -50,14 +51,13 @@ void setup1()
 
 void loop1()
 {
-  if (state == "0"){
+  if (state == "0")
+  {
     onReceive(LoRa.parsePacket());
   }
-  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5")
+  {
     onReceive(LoRa.parsePacket());
     sendMessage();
   }
-  
-  
-  
 }
