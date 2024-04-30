@@ -46,8 +46,8 @@ const long CodingRate4 = 5;
 void setup()
 {
   Serial.begin(9600);
-  while (!Serial)
-    ;
+  // while (!Serial)
+  //   ;
 
   // setupLoRa();
   // initSD();
@@ -74,6 +74,8 @@ void loop()
     Serial.print("' with RSSI ");
     Serial.println(LoRa.packetRssi());
   } */
+  Serial.printf("SCREEN STARTED");
+  delay(400);
 }
 
 void setupLoRa()
