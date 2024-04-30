@@ -7,20 +7,24 @@
 #include "IMU.h"
 #include "SaveData.h"
 #include "ScreenHelp.h"
+#include "SerialComs.h"
 
 void setupLoRa();
 
-void setup(){
-  Serial.begin(115200);        // Serial to computer
+void setup()
+{
+  Serial.begin(115200); // Serial to computer
   setupIMU();
   setupDisplay();
   initSharedDataStructures();
+  setupSerialComs();
 }
 
 void loop()
-{ 
+{
   getIMUData();
-  if (state == "3"){
+  if (state == "3")
+  {
     // PARAGLIDER CONTROL HERE
   }
 
@@ -33,6 +37,7 @@ void loop()
   {
     checkButtonPresses();
   }
+  loopSerialComs();
 }
 
 void setup1()

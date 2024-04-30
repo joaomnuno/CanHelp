@@ -27,8 +27,10 @@ void initSharedDataStructures();
 
 struct SharedData
 {
-  double pressure, temperatureAmbient, height, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ, helpMessage;
+  double pressure, temperatureAmbient, height, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ;
+  String helpMessage;
   volatile bool dataReady; // Flag to indicate new data is ready
+  double vbat;
 };
 
 struct ServoData

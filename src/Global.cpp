@@ -1,10 +1,8 @@
 #include "Global.h"
 #include "pico/sync.h"
 
-
 SharedData sharedData;
 LoRaData loraData;
-SharedData sharedData;
 
 String message = "";
 String state = "0";
