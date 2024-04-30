@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include "config.h"
 #include "Comms.h"
 #include "GpsTempBar.h"
 #include <TinyGPS++.h>
@@ -10,28 +9,25 @@
 #include <Wire.h>
 #include "IMU.h"
 #include "SaveData.h"
+#include <Arduino.h>
 
+void setup();
+void loop();
+void setup1();
+void loop1();
 
 void setupLoRa();
 
 void setup(){
   Serial.begin(115200);        // Serial to computer
-  setupGPS();
-  setupBME680();
   setupIMU();
   initSharedDataStructures();
 }
 
 void loop()
 { 
-  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5"){
-  getGPSData(message);
-  getBME680Data(message);
-  getIMUData(message);
 
-  // CODIGO DE ESCREVER NA SD
-  }
-
+  getIMUData();
   if (state == "3"){
     // PARAGLIDER CONTROL HERE
   }

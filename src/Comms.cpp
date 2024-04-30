@@ -9,17 +9,18 @@ SharedData sharedData;
 
 void sendMessage()
 {
-  delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
   LoRa.beginPacket();
   mutex_enter_blocking(&loraData.lock);
-  LoRa.print(String(sharedData.hour) + "|" + String(sharedData.minute) + "|" + String(sharedData.second) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.altitude) + "|" + String(sharedData.GPSLatitude) + "|" + String(sharedData.GPSLongitude) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
+  LoRa.print(String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.altitude) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
   mutex_exit(&loraData.lock);
   LoRa.endPacket();
+  delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
 }
 
 void setupLoRa()
 {
   // override the default CS, reset, and IRQ pins with config settings
+
   LoRa.setPins(loraCsPin, loraResetPin, loraIrqPin); // set CS, reset, IRQ pin
 
   if (!LoRa.begin(loraFrequency))
@@ -37,7 +38,7 @@ void setupLoRa()
   LoRa.setSyncWord(loraSyncword);         // ranges from 0-0x34, default 0x12
   LoRa.setGain(loraGain);                 // set the gain
   LoRa.enableCrc();                       // enable CRC
-  LoRa.setOCP(240);
+  LoRa.setOCP(loraOCP);
 
   // Increase Preamble Length for better detection
   LoRa.setPreambleLength(12); // Increase if needed
