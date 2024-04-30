@@ -1,20 +1,11 @@
 #include <Arduino.h>
 #include "Comms.h"
-#include "GpsTempBar.h"
-#include <TinyGPS++.h>
-#include <SoftwareSerial.h>
 #include <SPI.h>
 #include <LoRa.h>
 #include "Global.h"
 #include <Wire.h>
 #include "IMU.h"
 #include "SaveData.h"
-#include <Arduino.h>
-
-void setup();
-void loop();
-void setup1();
-void loop1();
 
 void setupLoRa();
 
