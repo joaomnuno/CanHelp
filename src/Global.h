@@ -29,6 +29,12 @@ struct SharedData
 {
   double pressure, temperatureAmbient, height, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ, helpMessage;
   volatile bool dataReady; // Flag to indicate new data is ready
+};
+
+struct ServoData
+{
+  double heading;
+  volatile bool dataReady; // Flag to indicate new data is ready
   double vbat;
 };
 

@@ -4,7 +4,6 @@
 #include <LoRa.h>
 #include "Global.h"
 
-SharedData sharedData;
 
 void sendMessage()
 {
