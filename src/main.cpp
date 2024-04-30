@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "config.h"
 #include "Comms.h"
-#include "GpsTempBar.h"
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
@@ -16,15 +15,13 @@ void setupLoRa();
 void setup()
 {
   Serial.begin(115200); // Serial to computer
-  setupGPS();
-  setupBME680();
   setupIMU();
   initSharedDataStructures();
 }
 
 void loop()
 {
-  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5")
+  if (state != "0")
   {
     getGPSData(message);
     getBME680Data(message);
