@@ -6,12 +6,14 @@
 #include <Wire.h>
 #include "IMU.h"
 #include "SaveData.h"
+#include "ScreenHelp.h"
 
 void setupLoRa();
 
 void setup(){
   Serial.begin(115200);        // Serial to computer
   setupIMU();
+  setupDisplay();
   initSharedDataStructures();
 }
 
@@ -30,7 +32,7 @@ void loop()
 
   if (state == "4")
   {
-    // HELP CODE HERE (ASK QUESTIONS, ETC)
+    checkButtonPresses();
   }
 }
 

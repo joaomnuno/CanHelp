@@ -25,7 +25,7 @@ extern LoRaData loraData;
 void initSharedDataStructures();
 
 struct SharedData {
-  double pressure, temperatureAmbient, altitude, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ;
+  double pressure, temperatureAmbient, altitude, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ, helpMessage;
   volatile bool dataReady;  // Flag to indicate new data is ready
 };
 
