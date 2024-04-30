@@ -5,7 +5,7 @@
 
 
 void setupIMU();
-void getIMUData(String &message);
+void getIMUData();
 void IMUDataUpdate(uint32_t regIndex, uint32_t count);
 
 #endif // IMU_H

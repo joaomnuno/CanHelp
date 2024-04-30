@@ -1,4 +1,8 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef SCREENHELP_H
+#define SCREENHELP_H
+
+#include <Arduino.h>
+
+
 
 #endif
