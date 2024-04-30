@@ -12,35 +12,33 @@ extern bool BME680Ready;
 extern bool IMUReady;
 extern String flightStage;
 
-struct LoRaData {
-    char message[256];
-    // int rssi;
-    // float snr;
-    mutex_t lock;
-    volatile bool dataReady;
+struct LoRaData
+{
+  char message[256];
+  // int rssi;
+  // float snr;
+  mutex_t lock;
+  volatile bool dataReady;
 };
 
 extern LoRaData loraData;
 
 void initSharedDataStructures();
 
-struct SharedData {
-  double pressure, temperatureAmbient, altitude, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ, helpMessage;
-  volatile bool dataReady;  // Flag to indicate new data is ready
-};
-
-struct ServoData{
-  double heading;
+struct SharedData
+{
+  double pressure, temperatureAmbient, height, state, buttonClicked, IMUAccX, IMUAccY, IMUAccZ, helpMessage;
   volatile bool dataReady; // Flag to indicate new data is ready
+  double vbat;
 };
 
-struct ReceivedData {
+struct ReceivedData
+{
   int instruction;
   volatile bool dataReady; // Flag to indicate new data is ready
 };
 
-extern SharedData sharedData;  // Declaration of the shared data object
-extern ServoData servoData;  // Declaration of the shared data object
-extern ReceivedData receivedData;  // Declaration of the received data object
+extern SharedData sharedData;     // Declaration of the shared data object
+extern ReceivedData receivedData; // Declaration of the received data object
 
 #endif

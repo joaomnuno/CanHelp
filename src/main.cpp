@@ -19,7 +19,6 @@ void setup(){
 
 void loop()
 { 
-
   getIMUData();
   if (state == "3"){
     // PARAGLIDER CONTROL HERE

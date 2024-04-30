@@ -2,6 +2,7 @@
 #include "pico/sync.h"
 
 LoRaData loraData;
+SharedData sharedData;
 
 String message = "";
 String state = "0";
@@ -9,16 +10,23 @@ float magneticDirection;
 int steer = 0;
 String flightStage = "0";
 
-void initSharedDataStructures() {
+void initSharedDataStructures()
+{
     mutex_init(&loraData.lock);
 }
 
-void updateState(String newState) {
-    if(state = "2" && sharedData.altitude > 400) {
+void updateState(String newState)
+{
+    if (state = "2" && sharedData.height > 400)
+    {
         flightStage = "1";
-    } else if (flightStage = "1" && sharedData.altitude < 130) {
+    }
+    else if (flightStage = "1" && sharedData.height < 130)
+    {
         flightStage = "2";
-    } else if (flightStage = "2") {
+    }
+    else if (flightStage = "2")
+    {
         // código para cortar o fio e largar o paraquedas --------
         flightStage = "3";
         state = "3";
@@ -36,10 +44,8 @@ Stages_
 
 */
 
-
-
 /*
-States 
+States
 
 -1 - doesn't change
 0 - not ready
