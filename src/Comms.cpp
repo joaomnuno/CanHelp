@@ -5,7 +5,6 @@
 #include "Global.h"
 #include <vector>
 
-SharedData sharedData;
 
 void sendMessage()
 {

@@ -19,7 +19,6 @@ void setupDisplay();
 void checkButtonPresses();
 void changeBitmap();
 
-// Declare the display object for an SSH1106 display using the constructor from U8g2 library
-extern U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
+
 
 #endif

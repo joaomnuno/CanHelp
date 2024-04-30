@@ -10,7 +10,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, ScreeniicClock, ScreeniicData)
 
 
 void setupDisplay() {
-    sharedData.helpMessage = '999999';
+    sharedData.helpMessage = "999999";
     pinMode(pinButton1, INPUT_PULLDOWN);
     pinMode(pinButton2, INPUT_PULLDOWN);
 
