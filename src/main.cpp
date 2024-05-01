@@ -37,6 +37,7 @@ void loop()
     // checkButtonPresses();
   }
   loopSerialComs();
+  loopLoRa();
 }
 
 void setup1()
