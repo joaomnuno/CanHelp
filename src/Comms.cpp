@@ -3,14 +3,13 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "Global.h"
-#include <vector>
 
 
 void sendMessage()
 {
   LoRa.beginPacket();
   mutex_enter_blocking(&loraData.lock);
-  LoRa.print(String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.altitude) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
+  LoRa.print(String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
   mutex_exit(&loraData.lock);
   LoRa.endPacket();
   delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
@@ -45,26 +44,31 @@ void setupLoRa()
   Serial.println("LoRa init succeeded.");
 }
 
-void onReceive(int packetSize) {
+void onReceive(int packetSize)
+{
 
   // Assume que a mensagem recebida vem na forma de STATE|flightStage|STEER , por exemplo - > 1|3|112
 
-  if (packetSize == 0) return;  // if there's no packet, return
+  if (packetSize == 0)
+    return; // if there's no packet, return
 
   // read packet header bytes:
   String incoming = "";
-  while (LoRa.available()) {
+  while (LoRa.available())
+  {
     incoming += (char)LoRa.read();
   }
 
-  if (state != "-1") {
+  if (state != "-1")
+  {
     state = incoming.substring(0, 1);
   }
 
-  if (flightStage != "-1") {
+  if (flightStage != "-1")
+  {
     flightStage = incoming.substring(2, 3);
   }
-  
+
   steer = incoming.substring(2, 3).toInt();
 
   // Print for debugging
@@ -74,7 +78,7 @@ void onReceive(int packetSize) {
   // Store the data in shared structure
   mutex_enter_blocking(&loraData.lock);
   strncpy(loraData.message, incoming.c_str(), sizeof(loraData.message));
-  loraData.message[sizeof(loraData.message) - 1] = '\0';  // Ensure null termination
+  loraData.message[sizeof(loraData.message) - 1] = '\0'; // Ensure null termination
   loraData.dataReady = true;
   mutex_exit(&loraData.lock);
 }
