@@ -17,11 +17,11 @@ void getGPSData(String &message) {
         if (gps.encode(Serial1.read())) {
             if (gps.location.isValid()) {
                 // Construct the message to send via LoRa
-                sharedData.GPSLatitude = double(gps.location.lat());
-                sharedData.GPSLongitude = double(gps.location.lng());
-                sharedData.hour = double(gps.time.hour());
-                sharedData.minute = double(gps.time.minute());
-                sharedData.second = double(gps.time.second());
+                //sharedData.GPSLatitude = double(gps.location.lat());
+                //sharedData.GPSLongitude = double(gps.location.lng());
+                //sharedData.hour = double(gps.time.hour());
+                //sharedData.minute = double(gps.time.minute());
+                //sharedData.second = double(gps.time.second());
             }
         }
     }

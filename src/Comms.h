@@ -2,6 +2,8 @@
 #define COMMS_H
 #include <Arduino.h>
 
+void resetLoRaModule();
+void checkCommunicationHealth();
 void setupLoRa();
 void sendMessage();
 void onReceive(int packetSize);
@@ -29,5 +31,5 @@ const long loraSyncword = 0x2a;     // ranges from 0-0x34, default 0x34
 const long loraGain = 6;            // LoRa radio auto gain setting
 const long CodingRate4 = 5;
 const int loraOCP = 255;
-
+const int MAX_FAILED_PACKETS = 3;
 #endif
