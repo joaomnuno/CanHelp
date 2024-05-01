@@ -4,7 +4,6 @@
 #include <LoRa.h>
 #include "Global.h"
 
-
 void sendMessage()
 {
   LoRa.beginPacket();
@@ -82,3 +81,4 @@ void onReceive(int packetSize)
   loraData.dataReady = true;
   mutex_exit(&loraData.lock);
 }
+

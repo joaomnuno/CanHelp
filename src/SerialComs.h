@@ -4,8 +4,8 @@
 
 #include <Arduino.h>
 
-const int UART_TX_PIN = 0;
-const int UART_RX_PIN = 1;
+const int UART_TX_PIN = 8;
+const int UART_RX_PIN = 9;
 const int UART_BAUD_RATE = 9600;
 
 void setupSerialComs();

@@ -9,20 +9,19 @@
 #include "ScreenHelp.h"
 #include "SerialComs.h"
 
-void setupLoRa();
-
 void setup()
 {
   Serial.begin(115200); // Serial to computer
-  setupIMU();
-  setupDisplay();
-  initSharedDataStructures();
+  // setupIMU();
+  // setupDisplay();
+  // initSharedDataStructures();
   setupSerialComs();
+  setupLoRa();
 }
 
 void loop()
 {
-  getIMUData();
+  // getIMUData();
   if (state == "3")
   {
     // PARAGLIDER CONTROL HERE
@@ -35,20 +34,19 @@ void loop()
 
   if (state == "4")
   {
-    checkButtonPresses();
+    // checkButtonPresses();
   }
   loopSerialComs();
 }
 
 void setup1()
 {
-  setupLoRa();
-  initSD();
+  // initSD();
 }
 
 void loop1()
 {
-  if (state == "0")
+  /* if (state == "0")
   {
     onReceive(LoRa.parsePacket());
   }
@@ -56,5 +54,5 @@ void loop1()
   {
     onReceive(LoRa.parsePacket());
     sendMessage();
-  }
+  } */
 }
