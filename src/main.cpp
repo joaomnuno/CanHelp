@@ -13,7 +13,7 @@ void setup()
 {
   Serial.begin(115200); // Serial to computer
   // setupIMU();
-  // setupDisplay();
+  setupDisplay();
   // initSharedDataStructures();
   setupSerialComs();
   setupLoRa();
@@ -34,8 +34,9 @@ void loop()
 
   if (state == "4")
   {
-    // checkButtonPresses();
+    checkButtonPresses();
   }
+  checkButtonPresses();
   loopSerialComs();
   loopLoRa();
 }

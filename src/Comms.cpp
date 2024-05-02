@@ -4,44 +4,16 @@
 #include <LoRa.h>
 #include "Global.h"
 
-void resetLoRaModule()
-{
-  digitalWrite(loraResetPin, LOW);
-  delay(10);
-  digitalWrite(loraResetPin, HIGH);
-  delay(10);
-  setupLoRa(); // Re-run the setup function
-}
-
-void checkCommunicationHealth()
-{
-  static unsigned int failedPacketCount = 0;
-
-  if (LoRa.parsePacket() == 0)
-  {
-    failedPacketCount++;
-  }
-  else
-  {
-    failedPacketCount = 0; // Reset on successful packet
-  }
-
-  if (failedPacketCount >= MAX_FAILED_PACKETS)
-  {
-    Serial.println("Resetting LoRa Module due to continuous packet loss.");
-    resetLoRaModule();
-    failedPacketCount = 0;
-  }
-}
 
 void sendMessage()
 {
+  sharedData.timestamp = millis();
   LoRa.beginPacket();
   // mutex_enter_blocking(&loraData.lock);
-  LoRa.println(String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
+  LoRa.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY));
   // mutex_exit(&loraData.lock);
   LoRa.endPacket();
-  Serial.println(String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + String(sharedData.IMUAccZ));
+  Serial.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY));
   delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
 }
 
