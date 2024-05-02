@@ -14,8 +14,7 @@ void setup()
 {
   Serial.begin(115200); // Serial to computer
   setupLoRa();
-  sharedData.pressure = 1000;
-  //setupIMU();
+   //setupIMU();
   //setupDisplay();
   //initSharedDataStructures();
   //setupSerialComs();
@@ -26,7 +25,6 @@ void loop()
 {
   //getIMUData();
   //sendMessage();
-  //sharedData.pressure ++;
   onReceive(LoRa.parsePacket());
   //Serial.println("sent data");
   /*
