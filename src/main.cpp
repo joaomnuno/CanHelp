@@ -1,40 +1,59 @@
-#include "Arduino.h"
-
-#include "SensorHandling.h"
-#include "ServoHandling.h"
-#include "DataHandling.h"
-#include "SharedData.h"
-#include "ScreenHandling.h"
-
-SharedData sharedData;     // Define the shared data object
-ServoData servoData;       // Define the servo data object
-ReceivedData receivedData; // Define the received data object
+#include <Arduino.h>
+#include "Comms.h"
+#include <SPI.h>
+#include <LoRa.h>
+#include "Global.h"
+#include <Wire.h>
+#include "IMU.h"
+#include "SaveData.h"
+#include "ScreenHelp.h"
+#include "SerialComs.h"
 
 void setup()
 {
-  Serial.begin(9600);
-  delay(4000);
-  Serial.println("Booting up!");
-  DataHandlingSetup();
-  SensorSetup();
-  // ScreenSetup();
+  Serial.begin(115200); // Serial to computer
+  // setupIMU();
+  // setupDisplay();
+  // initSharedDataStructures();
+  setupSerialComs();
+  setupLoRa();
 }
 
 void loop()
 {
-  HandleSensors();
-  HandleData();
-  //  HandleScreen();
-  // Serial.println("Testing...");
+  // getIMUData();
+  if (state == "3")
+  {
+    // PARAGLIDER CONTROL HERE
+  }
+
+  if (state == "5")
+  {
+    // PARAGLIDER MANUAL CONTROL HERE
+  }
+
+  if (state == "4")
+  {
+    // checkButtonPresses();
+  }
+  loopSerialComs();
+  loopLoRa();
 }
 
 void setup1()
 {
-  delay(1000);
-  ServoSetup();
+  // initSD();
 }
 
 void loop1()
 {
-  HandleInstructions();
+  /* if (state == "0")
+  {
+    onReceive(LoRa.parsePacket());
+  }
+  if (state == "1" || state == "2" || state == "3" || state == "4" || state == "5")
+  {
+    onReceive(LoRa.parsePacket());
+    sendMessage();
+  } */
 }
