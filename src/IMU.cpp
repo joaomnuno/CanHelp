@@ -39,5 +39,4 @@ void getIMUData()
     // Append IMU data to message
     sharedData.IMUAccX = double(sReg[AX] / 32768.0 * 16);
     sharedData.IMUAccY = double(sReg[AY] / 32768.0 * 16);
-    sharedData.IMUAccZ = double(sReg[AZ] / 32768.0 * 16);
 }
