@@ -10,10 +10,10 @@ void sendMessage()
   sharedData.timestamp = millis();
   LoRa.beginPacket();
   // mutex_enter_blocking(&loraData.lock);
-  LoRa.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY));
+  LoRa.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state +  "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat));
   // mutex_exit(&loraData.lock);
   LoRa.endPacket();
-  Serial.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.buttonClicked) + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY));
+  Serial.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state +  "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat));
   delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
 }
 
