@@ -9,14 +9,18 @@
 #include "ScreenHelp.h"
 #include "SerialComs.h"
 
+String fileName;
+
 void setup()
 {
   Serial.begin(115200); // Serial to computer
   // setupIMU();
   // setupDisplay();
   // initSharedDataStructures();
+  fileName = getNextFileName();
   setupSerialComs();
   setupLoRa();
+  initSD();
 }
 
 void loop()
@@ -38,6 +42,7 @@ void loop()
   }
   loopSerialComs();
   loopLoRa();
+  loopSD(fileName);
 }
 
 void setup1()
