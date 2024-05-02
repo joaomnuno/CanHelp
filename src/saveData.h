@@ -2,12 +2,11 @@
 #define SAVEDATA_H
 
 #include <Arduino.h>
-//#include "config.h"
+// #include "config.h"
 
-void readData();
 void initSD();
-void storeData(String fileName, const String& data);
-void deleteData();
+void loopSD(String filename);
+void storeData(String fileName, const String &data);
 String getNextFileName();
 
 // SD configuration (Pins)
