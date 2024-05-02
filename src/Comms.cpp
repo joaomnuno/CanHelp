@@ -4,6 +4,12 @@
 #include <LoRa.h>
 #include "Global.h"
 
+#ifndef COMMS
+#define COMMS
+long lastSendTime = 0;     // last send time
+int messageInterval = 300; // interval between sends
+#endif
+
 void resetLoRaModule()
 {
   digitalWrite(loraResetPin, LOW);
@@ -34,15 +40,14 @@ void checkCommunicationHealth()
   }
 }
 
-void sendMessage()
+void sendMessage(String message)
 {
   LoRa.beginPacket();
-  // mutex_enter_blocking(&loraData.lock);
-  LoRa.println(String(sharedData.timestamp) + "|" +String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" +  String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat));
-  // mutex_exit(&loraData.lock);
+  LoRa.println(message);
   LoRa.endPacket();
-  Serial.println(String(sharedData.timestamp) + "|" +String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" +  String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat));
-  delay(100); // APAGAR ISTO DEPOIS ---------------------------------------
+  // Serial.println(String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat));
+
+  // delay(300); // APAGAR ISTO DEPOIS ---------------------------------------
 }
 
 void setupLoRa()
@@ -84,9 +89,6 @@ void setupLoRa()
 
 void onReceive(int packetSize)
 {
-
-  // Assume que a mensagem recebida vem na forma de STATE|flightStage|STEER , por exemplo - > 1|3|112
-
   if (packetSize == 0)
     return; // if there's no packet, return
 
@@ -96,18 +98,13 @@ void onReceive(int packetSize)
   {
     incoming += (char)LoRa.read();
   }
+  incoming.trim();
+  Serial.println(incoming);
 
-  /*if (state != "-1")
+  if (incoming == "open")
   {
-    state = incoming.substring(0, 1);
+    Serial2.println("open");
   }
-
-  if (flightStage != "-1")
-  {
-    flightStage = incoming.substring(2, 3);
-  }
-*/
-  steer = incoming.substring(2, 3).toInt();
 
   // Print for debugging
   Serial.println(LoRa.packetRssi());
@@ -115,18 +112,19 @@ void onReceive(int packetSize)
 
   Serial.println("Message: " + incoming);
   Serial.println();
-
-  /* Store the data in shared structure
-  mutex_enter_blocking(&loraData.lock);
-  strncpy(loraData.message, incoming.c_str(), sizeof(loraData.message));
-  loraData.message[sizeof(loraData.message) - 1] = '\0'; // Ensure null termination
-  loraData.dataReady = true;
-  mutex_exit(&loraData.lock);*/
 }
 
 void loopLoRa()
 {
   // checkCommunicationHealth();
-  sendMessage();
-  // onReceive(LoRa.parsePacket());
+  if (millis() - lastSendTime > messageInterval)
+  {
+    String message = "";
+    message += String(millis()) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat);
+    sendMessage(message);
+    Serial.println("Sending " + message);
+    lastSendTime = millis(); // timestamp the message
+  }
+  // delay(1000);
+  onReceive(LoRa.parsePacket());
 }

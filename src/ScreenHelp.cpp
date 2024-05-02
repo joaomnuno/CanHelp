@@ -14,12 +14,12 @@ void setupDisplay()
     Wire1.setSCL(ScreeniicClock);
     Wire1.setSDA(ScreeniicData);
     Wire1.begin();
-    
+
     pinMode(pinButton1, INPUT_PULLDOWN);
     pinMode(pinButton2, INPUT_PULLDOWN);
 
     // Initialize the display
-    //u8g2.begin();
+    // u8g2.begin();
 }
 
 void checkButtonPresses()
@@ -30,8 +30,8 @@ void checkButtonPresses()
     static bool lastButtonState2 = HIGH;
     bool currentButtonState1 = digitalRead(pinButton1);
     bool currentButtonState2 = digitalRead(pinButton2);
-    Serial.print(currentButtonState1);
-    Serial.println(currentButtonState2);
+    // Serial.print(currentButtonState1);
+    // Serial.println(currentButtonState2);
 
     if (currentButtonState1 != lastButtonState1)
     {
@@ -53,27 +53,27 @@ void checkButtonPresses()
                 // Send GPS coordinates and Alert signal
                 sharedData.helpMessage[0] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 2:
                 sharedData.helpMessage[1] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 3:
                 sharedData.helpMessage[2] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 4:
                 sharedData.helpMessage[3] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 5:
                 sharedData.helpMessage[4] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 6:
                 sharedData.helpMessage[5] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             }
         }
     }
@@ -88,7 +88,7 @@ void checkButtonPresses()
                 // Send GPS coordinates and Alert signal
                 sharedData.helpMessage[0] = '1';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 2:
                 sharedData.helpMessage[1] = '0';
                 currentBitmap++;
@@ -96,19 +96,19 @@ void checkButtonPresses()
             case 3:
                 sharedData.helpMessage[2] = '0';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 4:
                 sharedData.helpMessage[3] = '0';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 5:
                 sharedData.helpMessage[4] = '0';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             case 6:
                 sharedData.helpMessage[5] = '0';
                 currentBitmap++;
-                //changeBitmap();
+                // changeBitmap();
             }
         }
 
