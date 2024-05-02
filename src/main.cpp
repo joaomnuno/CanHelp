@@ -13,9 +13,10 @@ String fileName;
 
 void setup()
 {
+  sharedData.helpMessage = "999999";
   Serial.begin(115200); // Serial to computer
   // setupIMU();
-  // setupDisplay();
+  setupDisplay();
   // initSharedDataStructures();
   fileName = getNextFileName();
   setupSerialComs();
@@ -38,8 +39,9 @@ void loop()
 
   if (state == "4")
   {
-    // checkButtonPresses();
+    checkButtonPresses();
   }
+  checkButtonPresses();
   loopSerialComs();
   loopLoRa();
   loopSD(fileName);
