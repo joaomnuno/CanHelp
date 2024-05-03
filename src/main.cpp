@@ -15,7 +15,7 @@ void setup()
 {
   sharedData.helpMessage = "0";
   Serial.begin(115200); // Serial to computer
-  setupIMU();
+  //setupIMU();
   setupDisplay();
   // initSharedDataStructures();
   fileName = getNextFileName();
@@ -26,25 +26,12 @@ void setup()
 
 void loop()
 {
-  getIMUData();
-  if (state == "3")
-  {
-    // PARAGLIDER CONTROL HERE
-  }
-
-  if (state == "5")
-  {
-    // PARAGLIDER MANUAL CONTROL HERE
-  }
-
-  if (state == "4")
-  {
-    checkButtonPresses();
-  }
+  //getIMUData();
   checkButtonPresses();
   loopSerialComs();
   loopLoRa();
   loopSD(fileName);
+  updateState();
 }
 
 void setup1()

@@ -105,6 +105,8 @@ void onReceive(int packetSize)
   {
     Serial.println("Sent to Xiao!");
     Serial2.println("open");
+    flightStage = "3";
+    state = "3";
   }
 }
 

@@ -11,6 +11,7 @@ extern bool GPSReady;
 extern bool BME680Ready;
 extern bool IMUReady;
 extern String flightStage;
+void updateState();
 
 struct LoRaData
 {
