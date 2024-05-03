@@ -108,6 +108,16 @@ void onReceive(int packetSize)
     flightStage = "3";
     state = "3";
   }
+  else if (incoming == "buzzON")
+  {
+    Serial.println("Sent to Xiao!");
+    Serial2.println("buzzON");
+  }
+  else if (incoming == "buzzOFF")
+  {
+    Serial.println("Sent to Xiao!");
+    Serial2.println("buzzOFF");
+  }
 }
 
 void loopLoRa()

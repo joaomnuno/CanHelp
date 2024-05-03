@@ -39,7 +39,7 @@ void storeData(String fileName, const String &data)
 void loopSD(String fileName)
 {
     String data = "";
-    data += String(sharedData.timestamp) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat);
+    data += String(millis()) + "|" + String(sharedData.pressure) + "|" + String(sharedData.temperatureAmbient) + "|" + String(sharedData.height) + "|" + state + "|" + String(sharedData.IMUAccX) + "|" + String(sharedData.IMUAccY) + "|" + sharedData.helpMessage + "|" + String(sharedData.vbat);
     storeData(fileName, data);
     // Serial.println("Data stored on SD Card.");
 }
