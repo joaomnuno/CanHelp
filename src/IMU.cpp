@@ -15,10 +15,10 @@ int32_t i2cRead(uint8_t ucAddr, uint8_t ucReg, uint8_t *p_ucVal, uint32_t uiLen)
 
 int32_t i2cWrite(uint8_t ucAddr, uint8_t ucReg, uint8_t *p_ucVal, uint32_t uiLen)
 {
-    Wire.beginTransmission(ucAddr);
-    Wire.write(ucReg);
-    Wire.write(p_ucVal, uiLen);
-    if (Wire.endTransmission() == 0)
+    Wire1.beginTransmission(ucAddr);
+    Wire1.write(ucReg);
+    Wire1.write(p_ucVal, uiLen);
+    if (Wire1.endTransmission() == 0)
     {
         return WIT_HAL_OK; // Success
     }
@@ -27,17 +27,17 @@ int32_t i2cWrite(uint8_t ucAddr, uint8_t ucReg, uint8_t *p_ucVal, uint32_t uiLen
 
 int32_t i2cRead(uint8_t ucAddr, uint8_t ucReg, uint8_t *p_ucVal, uint32_t uiLen)
 {
-    Wire.beginTransmission(ucAddr);
-    Wire.write(ucReg);
-    if (Wire.endTransmission(false) != 0)
+    Wire1.beginTransmission(ucAddr);
+    Wire1.write(ucReg);
+    if (Wire1.endTransmission(false) != 0)
     {
         return WIT_HAL_INVAL; // Transmission error
     }
-    if (Wire.requestFrom((int)ucAddr, (int)uiLen) == uiLen)
+    if (Wire1.requestFrom((int)ucAddr, (int)uiLen) == uiLen)
     {
         for (uint32_t i = 0; i < uiLen; i++)
         {
-            p_ucVal[i] = Wire.read();
+            p_ucVal[i] = Wire1.read();
         }
         return WIT_HAL_OK; // Success
     }
@@ -79,6 +79,11 @@ void updatePosition()
 
 void setupIMU()
 {
+// For boards that allow I2C pin configuration such as ESP32
+    Wire1.setSCL(SCL_PIN);
+    Wire1.setSDA(SDA_PIN);
+    Wire1.begin();  // Initialize the I2C bus on specific pins
+
     // Register the I2C communication functions directly
     WitI2cFuncRegister(i2cWrite, i2cRead);
 
