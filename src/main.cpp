@@ -13,7 +13,7 @@ String fileName;
 
 void setup()
 {
-  sharedData.helpMessage = "999999";
+  sharedData.helpMessage = "0";
   Serial.begin(115200); // Serial to computer
   // setupIMU();
   setupDisplay();

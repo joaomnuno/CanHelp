@@ -103,15 +103,9 @@ void onReceive(int packetSize)
 
   if (incoming == "open")
   {
+    Serial.println("Sent to Xiao!");
     Serial2.println("open");
   }
-
-  // Print for debugging
-  Serial.println(LoRa.packetRssi());
-  Serial.println(LoRa.packetSnr());
-
-  Serial.println("Message: " + incoming);
-  Serial.println();
 }
 
 void loopLoRa()
